@@ -42,15 +42,15 @@ export const messages: Messages = {
     cardReceiveTitle: "Point and receive",
     cardReceiveBody: "Point your camera at the sender's screen to receive the file.",
     cardReceiveAction: "Receive",
-    shareSite: "Share Decimen",
+    shareSite: "Share PhotonDrop",
     supportTitle: "Free, open source, no ads",
     supportBodyHtml:
-      'If Decimen made your day easier, you can <a href="https://buymeacoffee.com/bashalarmist" target="_blank" rel="noopener noreferrer">buy me a coffee</a>.',
+      'If PhotonDrop made your day easier, you can <a href="https://buymeacoffee.com/bashalarmist" target="_blank" rel="noopener noreferrer">buy me a coffee</a>.',
     shareDialogTitle: "Share this app",
     shareDialogHint: "Scan this with another device's camera, or send it the link.",
     siteLinkAriaLabel: "Site link",
     privacyNote:
-      "A network path is not required between the devices. The bytes travel as light. Files are not encrypted, so anything on the sending screen is readable by any camera pointed at it.",
+      "A network path is not required between the devices. The bytes travel as light. Optional end-to-end AES-256-GCM encryption is available to protect your files.",
   },
 
   send: {

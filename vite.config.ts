@@ -132,7 +132,7 @@ export default defineConfig(({ mode }) => {
         standaloneCsp(page),
         viteSingleFile(),
         licenseBanner(pkg.version),
-        emitAs(outDir, `${page}/index.html`, `decimen-${page === "send" ? "sender" : "receiver"}.html`),
+        emitAs(outDir, `${page}/index.html`, `photondrop-${page === "send" ? "sender" : "receiver"}.html`),
       ],
       // Workers are bundled in their own Rollup pass and do not inherit the
       // plugin list, so both plugins have to be registered again here.

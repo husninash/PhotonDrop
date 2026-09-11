@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
 * {
   box-sizing: border-box;
 }
@@ -11,17 +13,20 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font: 15px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font: 15px/1.6 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 14px;
   padding: 20px;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 h1 {
-  font-size: 16px;
-  letter-spacing: 0.12em;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent);
   margin: 0;
@@ -54,23 +59,32 @@ a {
    mode selector outshouted the button that actually starts the transfer. */
 button {
   font: inherit;
-  color: var(--accent-ink);
-  background: var(--accent);
-  border: 0;
-  border-radius: 8px;
-  padding: 14px 36px;
-  font-size: 18px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-radius: 12px;
+  padding: 14px 34px;
+  font-size: 16px;
   font-weight: 700;
+  letter-spacing: 0.04em;
   cursor: pointer;
-  transition: background-color 130ms ease;
+  box-shadow: 0 4px 18px rgba(37, 99, 235, 0.35);
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 button:hover {
-  background: var(--accent-hi);
+  background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%);
+  border-color: #38bdf8;
+  box-shadow: 0 6px 26px rgba(56, 189, 248, 0.5);
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(1px);
 }
 
 button:focus-visible {
-  outline: 2px solid var(--text);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 /* Author `display` rules beat the UA sheet's [hidden], so restate it. */
@@ -85,11 +99,19 @@ button:focus-visible {
   align-items: center;
   gap: 14px;
   color: var(--text);
-  background: var(--panel);
-  border: 1px solid var(--line-bright);
-  border-radius: 8px;
-  padding: 14px 16px;
+  background: rgba(14, 21, 37, 0.72);
+  backdrop-filter: blur(14px);
+  border: 1px dashed rgba(56, 189, 248, 0.35);
+  border-radius: 14px;
+  padding: 16px 20px;
   cursor: pointer;
+  transition: all 180ms ease;
+}
+
+.file-picker:hover {
+  border-color: var(--accent);
+  background: rgba(18, 28, 50, 0.85);
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.5), 0 0 16px -4px rgba(56, 189, 248, 0.25);
 }
 
 /* Stands in for the native control, which is visually hidden below but still
@@ -98,17 +120,19 @@ button:focus-visible {
    a red outline button, not another blue action (see the note on .has-file). */
 .file-picker-button {
   flex: none;
-  color: var(--accent-ink);
-  background: var(--accent);
-  border: 1px solid transparent;
-  border-radius: 6px;
-  padding: 8px 14px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-radius: 8px;
+  padding: 9px 18px;
   font-weight: 700;
-  transition: background-color 130ms ease, border-color 130ms ease, color 130ms ease;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.3);
+  transition: all 140ms ease;
 }
 
 .file-picker:hover .file-picker-button {
-  background: var(--accent-hi);
+  background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%);
+  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.45);
 }
 
 /* Red is the RESTING state, not a hover flourish: iOS latches :hover on the
@@ -118,18 +142,21 @@ button:focus-visible {
   color: var(--red);
   background: transparent;
   border-color: var(--red);
+  box-shadow: none;
 }
 
 .file-picker.has-file:hover .file-picker-button {
   /* --red at ~12% for the fill; keep in step if the token changes. */
-  background: rgba(255, 123, 114, 0.12);
+  background: rgba(244, 63, 94, 0.15);
+  border-color: var(--red);
 }
 
 .file-picker-text {
   min-width: 0;
   overflow-wrap: anywhere;
-  color: var(--accent);
-  font-weight: 700;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 14px;
 }
 
 /* Hidden but not display: none — it must stay focusable for the keyboard. */
@@ -144,15 +171,20 @@ button:focus-visible {
 /* Keyboard focus only — :focus-within kept the ring on after every pointer
    pick, because the closing file dialog hands focus back to the input. */
 .file-picker:has(input:focus-visible) .file-picker-button {
-  outline: 2px solid var(--text);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 .stage {
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  /* The code itself is the tap target for the fullscreen toggle below. */
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 20px;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35), 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(56, 189, 248, 0.2);
   cursor: zoom-in;
+  transition: all 220ms ease;
+}
+
+.stage:hover {
+  box-shadow: 0 0 0 3px var(--accent), 0 24px 60px rgba(0, 0, 0, 0.9), 0 0 50px rgba(56, 189, 248, 0.35);
 }
 
 /* Tap-to-fullscreen — deliberately NOT a fixed overlay and NOT :fullscreen
@@ -214,11 +246,12 @@ body.qr-full #stage[hidden] {
 }
 .progress {
   width: min(92vw, 480px);
-  height: 14px;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 7px;
+  height: 12px;
+  background: rgba(14, 21, 37, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 999px;
   overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
 }
 .progress-status {
   width: min(92vw, 480px);
@@ -226,6 +259,7 @@ body.qr-full #stage[hidden] {
   justify-content: space-between;
   gap: 16px;
   color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
   font-size: 13px;
   font-variant-numeric: tabular-nums;
 }
@@ -237,28 +271,47 @@ body.qr-full #stage[hidden] {
 }
 .progress > div {
   height: 100%;
-  background: var(--accent);
-  transition: width 0.25s;
+  background: linear-gradient(90deg, #38bdf8 0%, #10b981 100%);
+  border-radius: 999px;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.6);
+  transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+.progress > div::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  animation: barShimmer 1.8s infinite;
+}
+@keyframes barShimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 .progress > div.error {
   background: var(--red);
+  box-shadow: 0 0 16px rgba(244, 63, 94, 0.6);
 }
 /* Styled like the page headings, not green: the status line already says
    "SHA-256 verified ✓", which is what green is reserved for in this palette. */
 .done {
   color: var(--text);
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 .failed {
   color: var(--red);
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 img.received,
 video.received {
   max-width: min(92vw, 640px);
-  border-radius: 10px;
+  border-radius: 14px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
 }
 audio.received {
   width: min(92vw, 640px);
@@ -270,26 +323,36 @@ audio.received {
   gap: 14px;
 }
 a.download {
-  display: inline-block;
-  color: var(--accent-ink);
-  background: var(--accent);
-  border-radius: 8px;
-  padding: 12px 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  border-radius: 12px;
+  padding: 14px 28px;
   font-size: 16px;
   font-weight: 700;
   text-decoration: none;
-  /* The label carries a filename, which is usually one unbroken word — so its
-     min-content width is the whole thing, and as a flex item it would refuse to
-     shrink and push the row off a phone screen. */
+  box-shadow: 0 4px 20px rgba(5, 150, 105, 0.4);
+  transition: all 180ms ease;
   max-width: 100%;
   overflow-wrap: anywhere;
 }
+a.download:hover {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  box-shadow: 0 6px 26px rgba(16, 185, 129, 0.55);
+  transform: translateY(-1px);
+}
 details.settings {
   width: min(92vw, 640px);
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 8px 12px;
+  background: rgba(14, 21, 37, 0.72);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(56, 189, 248, 0.16);
+  border-radius: 14px;
+  padding: 12px 18px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
 }
 /* Panel headings, not labels: at --muted they sat at the same weight as the
    knob captions inside them and the panel read as one undifferentiated block.
@@ -470,29 +533,27 @@ details.settings details.subsection .hint {
    equipment rather than a terminal, and — unlike a green accent — leaves green
    free to mean *verified* and red free to mean *failed*, which this UI needs.
    Every colour below is a token; the only literal colours left in this file are
-   functional (the QR quiet zone, the letterbox behind the camera). */
-:root {
+   functional (the QR quiet zone:root {
   color-scheme: dark;
-  --bg: #070a11;
-  --panel: #0e1420;
-  --panel-strong: #121a29;
-  --line: #1d2740;
-  --line-bright: #34466f;
-  --text: #dde6f5;
-  --text-dim: #b9c6dd;
-  --muted: #7c8aa8;
-  --muted-dim: #5c6883;
-  --accent: #58c8ff;
-  --accent-hi: #8adaff;
-  /* Ink for text sitting ON the accent. Separate token because a light theme
-     would need this to go the other way. */
-  --accent-ink: #04121c;
-  --green: #5fe0b0;
-  --red: #ff7b72;
-  /* Behind the camera image: stays near-black in any theme. */
-  --viewport-bg: #04070d;
-  --accent-rgb: 88, 200, 255;
-  --bg-rgb: 7, 10, 17;
+  --bg: #060810;
+  --panel: rgba(14, 21, 37, 0.72);
+  --panel-strong: rgba(18, 28, 50, 0.88);
+  --line: rgba(56, 189, 248, 0.12);
+  --line-bright: rgba(56, 189, 248, 0.26);
+  --text: #f0f6fc;
+  --text-dim: #cbd5e1;
+  --muted: #8492a6;
+  --muted-dim: #475569;
+  --accent: #38bdf8;
+  --accent-hi: #7dd3fc;
+  --accent-glow: rgba(56, 189, 248, 0.4);
+  --accent-ink: #020617;
+  --green: #10b981;
+  --red: #f43f5e;
+  --amber: #f59e0b;
+  --viewport-bg: #03060c;
+  --accent-rgb: 56, 189, 248;
+  --bg-rgb: 6, 8, 16;
 }
 
 /* Column flex (gap zeroed — the base body gap would pad between header, main
@@ -508,7 +569,9 @@ details.settings details.subsection .hint {
   padding: 0;
   min-height: 100svh;
   background:
-    radial-gradient(circle at 80% -10%, rgba(var(--accent-rgb), 0.07), transparent 35%),
+    radial-gradient(ellipse 70% 40% at 50% -10%, rgba(56, 189, 248, 0.16), transparent 70%),
+    radial-gradient(circle 450px at 90% 85%, rgba(99, 102, 241, 0.09), transparent 50%),
+    radial-gradient(circle 400px at 10% 85%, rgba(16, 185, 129, 0.07), transparent 50%),
     var(--bg);
 }
 
@@ -654,21 +717,30 @@ details.settings details.subsection .hint {
 .transfer-card {
   /* Tall enough that both cards' buttons line up, no taller — the numbered
      row this used to leave space for is gone. */
-  min-height: 336px;
+  min-height: 340px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 30px;
-  padding: clamp(24px, 4vw, 42px);
+  padding: clamp(26px, 4vw, 42px);
   border: 1px solid var(--line);
-  border-radius: 18px;
-  background: linear-gradient(150deg, var(--panel-strong), var(--panel));
+  border-radius: 20px;
+  background: linear-gradient(150deg, rgba(18, 28, 50, 0.75), rgba(11, 16, 28, 0.85));
+  backdrop-filter: blur(16px);
+  box-shadow: 0 12px 36px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.transfer-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.7), 0 0 28px -6px rgba(56, 189, 248, 0.22);
 }
 
 .note-feature-card {
   background:
-    linear-gradient(150deg, rgba(var(--accent-rgb), 0.07), transparent 55%),
-    var(--panel);
+    linear-gradient(150deg, rgba(56, 189, 248, 0.09), transparent 60%),
+    rgba(14, 21, 37, 0.8);
   border-color: var(--line-bright);
 }
 
@@ -701,24 +773,30 @@ details.settings details.subsection .hint {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 22px;
+  gap: 20px;
   width: 100%;
   min-height: 54px;
-  padding: 0 22px;
-  /* Solid CTA blue, matching the page's other primary buttons. */
-  color: var(--accent-ink);
-  background: var(--accent);
-  border: 1px solid var(--accent);
-  border-radius: 10px;
+  padding: 0 24px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-radius: 12px;
   font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   text-decoration: none;
-  transition:
-    background-color 140ms ease,
-    border-color 140ms ease,
-    color 140ms ease;
+  box-shadow: 0 4px 18px rgba(37, 99, 235, 0.35);
+  transition: all 180ms ease;
+}
+
+.action:hover,
+.action:focus-visible {
+  color: #ffffff;
+  background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%);
+  border-color: #38bdf8;
+  box-shadow: 0 6px 26px rgba(56, 189, 248, 0.5);
+  transform: translateY(-1px);
 }
 
 /* Stroke SVG rather than a text glyph: → and ↓ came from whatever the
@@ -729,13 +807,6 @@ details.settings details.subsection .hint {
   height: 20px;
   flex: none;
   transition: transform 160ms ease;
-}
-
-.action:hover,
-.action:focus-visible {
-  color: var(--accent-ink);
-  background: var(--accent-hi);
-  border-color: var(--accent-hi);
 }
 
 /* Nudge the arrow the way it points, so the two cards read as opposite
@@ -1264,6 +1335,186 @@ details.settings details.subsection .hint {
 .help-dialog .secondary-button {
   margin-top: 14px;
 }
+
+/* Telemetry Stream Specs (Sender) */
+.stream-specs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin: 16px 0 0;
+  padding: 16px;
+  background: rgba(8, 12, 22, 0.75);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.stream-specs > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stream-specs dt {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.stream-specs dd {
+  margin: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  overflow-wrap: anywhere;
+}
+
+/* Encryption Bar (Sender) */
+.encryption-bar {
+  width: 100%;
+  padding: 14px 18px;
+  background: rgba(14, 21, 37, 0.72);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.password-label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.password-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.password-title small {
+  color: var(--muted);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.password-input-group {
+  display: flex;
+  position: relative;
+  align-items: center;
+  width: 100%;
+}
+
+.password-input-group input {
+  width: 100%;
+  padding: 10px 42px 10px 14px;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--line-bright);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.password-input-group input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.18);
+}
+
+.password-toggle-btn {
+  position: absolute;
+  inset-inline-end: 8px;
+  background: transparent;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  opacity: 0.75;
+  transition: opacity 120ms ease;
+}
+
+.password-toggle-btn:hover {
+  opacity: 1;
+}
+
+/* Decrypt Modal (Receiver) */
+.decrypt-modal {
+  text-align: center;
+  background: rgba(18, 22, 34, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(var(--accent-rgb), 0.35);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7), 0 0 24px rgba(var(--accent-rgb), 0.12);
+  border-radius: 16px;
+  padding: 28px 24px;
+}
+
+.decrypt-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.lock-glow-icon {
+  color: var(--accent);
+  filter: drop-shadow(0 0 10px rgba(var(--accent-rgb), 0.5));
+}
+
+.decrypt-header h2 {
+  font-size: 18px;
+  margin: 4px 0 0;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.decrypt-header .hint {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+  color: var(--muted);
+  max-width: 340px;
+}
+
+.decrypt-error-msg {
+  color: var(--red);
+  background: rgba(255, 123, 114, 0.1);
+  border: 1px solid rgba(255, 123, 114, 0.25);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 12px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: start;
+}
+
+.decrypt-actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: center;
+}
+
+.decrypt-actions .action {
+  width: 100%;
+  justify-content: center;
+  padding: 12px 20px;
+  font-size: 14px;
+}
+
 
 /* The share dialog (home page and sender) builds on the help dialog. */
 .share-dialog {

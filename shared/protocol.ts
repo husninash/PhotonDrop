@@ -110,9 +110,80 @@ export const CRITICAL_FLAGS = 0x0f;
 export const FLAG_ENCRYPTED = 0x01;
 
 /**
- * Critical flag bits this build can actually honour — currently none.
+ * Critical flag bits this build can actually honour.
  */
-const SUPPORTED_FLAGS = 0x00;
+export const SUPPORTED_FLAGS = FLAG_ENCRYPTED;
+
+export const SALT_LEN = 16;
+export const IV_LEN = 12;
+const PBKDF2_ITERATIONS = 100_000;
+
+export async function deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey> {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(password),
+    { name: "PBKDF2" },
+    false,
+    ["deriveKey"],
+  );
+  return await crypto.subtle.deriveKey(
+    {
+      name: "PBKDF2",
+      salt: salt as BufferSource,
+      iterations: PBKDF2_ITERATIONS,
+      hash: "SHA-256",
+    },
+    keyMaterial,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt", "decrypt"],
+  );
+}
+
+export async function encryptContainer(
+  container: Uint8Array,
+  password: string,
+): Promise<Uint8Array> {
+  const salt = crypto.getRandomValues(new Uint8Array(SALT_LEN));
+  const iv = crypto.getRandomValues(new Uint8Array(IV_LEN));
+  const key = await deriveKey(password, salt);
+  const ciphertextBuffer = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv: iv as BufferSource },
+    key,
+    container as BufferSource,
+  );
+  const ciphertext = new Uint8Array(ciphertextBuffer);
+  const result = new Uint8Array(SALT_LEN + IV_LEN + ciphertext.length);
+  result.set(salt, 0);
+  result.set(iv, SALT_LEN);
+  result.set(ciphertext, SALT_LEN + IV_LEN);
+  return result;
+}
+
+export async function decryptContainer(
+  encryptedPayload: Uint8Array,
+  password: string,
+): Promise<Uint8Array> {
+  if (encryptedPayload.length < SALT_LEN + IV_LEN + 16) {
+    throw new OpticalError("containerTruncated");
+  }
+  const salt = encryptedPayload.subarray(0, SALT_LEN);
+  const iv = encryptedPayload.subarray(SALT_LEN, SALT_LEN + IV_LEN);
+  const ciphertext = encryptedPayload.subarray(SALT_LEN + IV_LEN);
+  const key = await deriveKey(password, salt);
+  try {
+    const decryptedBuffer = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: iv as BufferSource },
+      key,
+      ciphertext as BufferSource,
+    );
+    return new Uint8Array(decryptedBuffer);
+  } catch {
+    throw new Error("Decryption failed: incorrect password or corrupt data.");
+  }
+}
+
 export const MAX_FILE_BYTES = 64 * 1024 * 1024;
 /**
  * One place for the number, so the picker label, the rejection message and

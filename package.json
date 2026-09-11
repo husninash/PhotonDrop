@@ -1,10 +1,10 @@
 {
-  "name": "decimen-optical-transfer",
+  "name": "photondrop",
   "private": true,
   "version": "0.5.3",
   "license": "AGPL-3.0-or-later",
   "engines": {
-    "node": ">=24"
+    "node": ">=22"
   },
   "description": "Offline file and text transfer using fountain-coded animated QR codes — screen to camera, no network.",
   "type": "module",

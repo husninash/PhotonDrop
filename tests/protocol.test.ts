@@ -15,6 +15,8 @@ import {
   unpackFile,
   verifyFile,
   WIRE_VERSION,
+  encryptContainer,
+  decryptContainer,
 } from "../shared/protocol.ts";
 
 test("arbitrary file metadata and bytes survive the optical container", async () => {
@@ -353,13 +355,20 @@ test("version 0 is ours but nonsense, and says nothing", () => {
   assert.equal(parseFrame(withByte(2, 0)), null);
 });
 
+test("an encrypted frame classifies clean and preserves FLAG_ENCRYPTED", () => {
+  const frame = withByte(3, FLAG_ENCRYPTED);
+  assert.deepEqual(classifyFrame(frame), { kind: "ok" });
+  assert.equal(parseFrame(frame)!.header.flags, FLAG_ENCRYPTED);
+});
+
 test("an unknown critical flag is refused with a message, not decoded anyway", () => {
-  assert.ok(FLAG_ENCRYPTED & CRITICAL_FLAGS, "encryption must be must-understand");
-  const verdict = classifyFrame(withByte(3, FLAG_ENCRYPTED));
-  assert.deepEqual(verdict, { kind: "unsupported-flags", flags: FLAG_ENCRYPTED });
+  const UNKNOWN_CRITICAL = 0x02;
+  assert.ok(UNKNOWN_CRITICAL & CRITICAL_FLAGS, "must be a critical bit");
+  const verdict = classifyFrame(withByte(3, UNKNOWN_CRITICAL));
+  assert.deepEqual(verdict, { kind: "unsupported-flags", flags: UNKNOWN_CRITICAL });
   assert.match(frameVerdictMessage(verdict)!, /cannot read/);
   assert.equal(
-    parseFrame(withByte(3, FLAG_ENCRYPTED)),
+    parseFrame(withByte(3, UNKNOWN_CRITICAL)),
     null,
     "never decode a payload we cannot honour",
   );
@@ -381,9 +390,10 @@ test("an unknown ignorable flag decodes anyway, and rides through to the header"
 test("a mixed flags byte is judged on its critical half alone", () => {
   let ignorable = 1;
   while (ignorable & CRITICAL_FLAGS) ignorable <<= 1;
-  assert.deepEqual(classifyFrame(withByte(3, ignorable | FLAG_ENCRYPTED)), {
+  const UNKNOWN_CRITICAL = 0x02;
+  assert.deepEqual(classifyFrame(withByte(3, ignorable | UNKNOWN_CRITICAL)), {
     kind: "unsupported-flags",
-    flags: FLAG_ENCRYPTED, // the ignorable bit is not part of the complaint
+    flags: UNKNOWN_CRITICAL,
   });
 });
 
@@ -417,3 +427,35 @@ test("a good v3 frame classifies clean and carries no flags", () => {
   assert.equal(frameVerdictMessage({ kind: "ok" }), null);
   assert.equal(parseFrame(goodFrame())!.header.flags, 0);
 });
+
+test("encryptContainer and decryptContainer roundtrip with matching password and fail on wrong password", async () => {
+  const original = new Uint8Array([1, 2, 3, 4, 5, 42, 99, 255]);
+  const password = "SuperSecretPassword123!";
+  const encrypted = await encryptContainer(original, password);
+
+  assert.notDeepEqual(encrypted, original);
+  assert.ok(encrypted.length > original.length);
+
+  // Decrypt with correct password
+  const decrypted = await decryptContainer(encrypted, password);
+  assert.deepEqual(decrypted, original);
+
+  // Decrypt with wrong password fails
+  await assert.rejects(
+    async () => {
+      await decryptContainer(encrypted, "WrongPassword!");
+    },
+    /Decryption failed/,
+  );
+
+  // Tampered ciphertext fails
+  const tampered = encrypted.slice();
+  tampered[tampered.length - 1] ^= 0xff;
+  await assert.rejects(
+    async () => {
+      await decryptContainer(tampered, password);
+    },
+    /Decryption failed/,
+  );
+});
+

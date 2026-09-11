@@ -43,8 +43,10 @@ import {
 import { LTEncoder } from "../shared/fountain";
 import { MAX_SNIPPET_BYTES, packSnippet } from "../shared/snippet";
 import {
+  FLAG_ENCRYPTED,
   MAX_FILE_BYTES,
   MAX_FILE_LABEL,
+  encryptContainer,
   fnv1a,
   packFile,
   packFrame,
@@ -110,13 +112,30 @@ const cfgBytes = document.getElementById("cfg-bytes") as HTMLSelectElement;
 const cfgEcc = document.getElementById("cfg-ecc") as HTMLSelectElement;
 const cfgGrid = document.getElementById("cfg-grid") as HTMLSelectElement;
 const cfgSize = document.getElementById("cfg-size") as HTMLInputElement;
+const cfgPassword = document.getElementById("cfg-password") as HTMLInputElement | null;
+const togglePasswordBtn = document.getElementById("toggle-password") as HTMLButtonElement | null;
+
+togglePasswordBtn?.addEventListener("click", () => {
+  if (!cfgPassword) return;
+  const isPass = cfgPassword.type === "password";
+  cfgPassword.type = isPass ? "text" : "password";
+  togglePasswordBtn.textContent = isPass ? "🙈" : "👁️";
+});
+
+cfgPassword?.addEventListener("input", () => {
+  if (selectedFile) {
+    void startStream(false);
+  }
+});
 
 let selectedFile: {
   name: string;
   size: number;
+  rawContainer: Uint8Array;
   payload: Uint8Array;
   compression: "none" | "gzip";
   transmittedSize: number;
+  encrypted: boolean;
 } | null = null;
 let generation = 0; // bumped on every restart; stale loops see it and die
 let resizeDisplay: (() => void) | null = null;
@@ -366,9 +385,11 @@ async function startSelection(
     selectedFile = {
       name,
       size,
+      rawContainer: packed.container,
       payload: packed.container,
       compression: packed.compression,
       transmittedSize: packed.transmittedSize,
+      encrypted: false,
     };
     await startStream(true);
   } catch (error) {
@@ -479,8 +500,19 @@ async function startStream(revealStage = false) {
     setStatus(currentMode() === "snippet" ? msg.send.statusPasteText : msg.send.statusChooseFile);
     return;
   }
-  const { name, size: fileSize, payload, compression, transmittedSize } = selectedFile;
+  const { name, size: fileSize, rawContainer, compression, transmittedSize } = selectedFile;
   if (gen !== generation) return; // superseded while fetching
+
+  const password = cfgPassword?.value?.trim() ?? "";
+  const isEncrypted = password.length > 0;
+  let payload = rawContainer;
+  if (isEncrypted) {
+    payload = await encryptContainer(rawContainer, password);
+    if (gen !== generation) return;
+  }
+  selectedFile.payload = payload;
+  selectedFile.encrypted = isEncrypted;
+
   const txFps = Number(cfgFps.value);
   const frameBytes = Number(cfgBytes.value);
   const ecc = cfgEcc.value as "L" | "M" | "Q" | "H";
@@ -520,10 +552,7 @@ async function startStream(revealStage = false) {
     blockLen,
     totalLen: payload.length,
     payloadFnv: fnv1a(payload),
-    // No feature bits: this build sends the plain v3 format (see FLAG_* in
-    // protocol.ts). Spelled out rather than defaulted so adding a flag is a
-    // decision made here, not an omission.
-    flags: 0,
+    flags: isEncrypted ? FLAG_ENCRYPTED : 0,
   };
 
   let version: number | undefined; // locked after the first frame
@@ -626,6 +655,10 @@ async function startStream(revealStage = false) {
       spec("spec-compression").textContent =
         compression === "gzip" ? msg.send.gzipTo(formatBytesL(transmittedSize)) : msg.send.compressionNone;
       spec("spec-k").textContent = `K = ${encoder.k}`;
+      const secEl = document.getElementById("spec-security");
+      if (secEl) {
+        secEl.textContent = isEncrypted ? "🔒 Encrypted (AES-256-GCM)" : "None";
+      }
       showStreamPanels(true);
       // The status line is built by hand: setStatus is textContent-only, and
       // the next setStatus wiping these children out is exactly right.

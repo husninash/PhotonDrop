@@ -51,8 +51,8 @@ const pkg = JSON.parse(readFileSync(resolve(__dirname, "package.json"), "utf8"))
 // Shared between the root PWA manifest and the per-locale manifests emitted
 // by i18nPages() — one identity, translated descriptions.
 const MANIFEST_BASE = {
-  name: "Decimen Optical Transfer",
-  short_name: "Decimen",
+  name: "PhotonDrop",
+  short_name: "PhotonDrop",
   description:
     "Send a file or text between two devices with a screen and a camera. No network.",
   theme_color: "#070a11",
@@ -219,7 +219,7 @@ export default defineConfig(({ mode }) => {
     },
     // host: true on both so a phone on the LAN can reach either the dev server
     // or the built bundle that `npm run serve` previews.
-    server: { host: true },
-    preview: { host: true },
+    server: { host: true, port: 5180 },
+    preview: { host: true, port: 5180 },
   };
 });

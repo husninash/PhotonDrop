@@ -23,7 +23,7 @@ export const messages: Messages = {
   },
 
   home: {
-    title: "Decimen Optical Transfer — transfer files with light",
+    title: "PhotonDrop — transfer files with light",
     metaDescription:
       "Send a file or text between two devices with nothing but a screen and a camera. Fountain-coded animated QR codes, no network path in between.",
     ogDescription:
@@ -54,7 +54,7 @@ export const messages: Messages = {
   },
 
   send: {
-    docTitle: "Decimen Optical Transfer — send",
+    docTitle: "PhotonDrop — send",
     eyebrow: "Screen → camera",
     introCopy: "Nothing leaves your device until you scan with a receiver.",
     modeAriaLabel: "What to send",
@@ -142,7 +142,7 @@ export const messages: Messages = {
   },
 
   receive: {
-    docTitle: "Decimen Optical Transfer — receive",
+    docTitle: "PhotonDrop — receive",
     eyebrow: "Camera → your device",
     title: "Receive",
     statusReady: "Ready to scan a file or text stream",

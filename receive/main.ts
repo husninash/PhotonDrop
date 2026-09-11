@@ -36,7 +36,9 @@ import {
 } from "../shared/worker-pool";
 import { isSnippet, snippetText } from "../shared/snippet";
 import {
+  FLAG_ENCRYPTED,
   classifyFrame,
+  decryptContainer,
   fnv1a,
   parseFrame,
   streamIdentity,
@@ -73,6 +75,17 @@ const cfgCapFps = document.getElementById("cfg-capfps") as HTMLSelectElement;
 const cfgWorkers = document.getElementById("cfg-workers") as HTMLSelectElement;
 const cfgCamera = document.getElementById("cfg-camera") as HTMLSelectElement;
 const cfgAutoShow = document.getElementById("cfg-autoshow") as HTMLInputElement;
+const cfgPrePassword = document.getElementById("cfg-pre-password") as HTMLInputElement | null;
+const togglePrePassword = document.getElementById("toggle-pre-password") as HTMLButtonElement | null;
+const prePassPane = document.getElementById("pane-pre-pass") as HTMLDivElement | null;
+
+if (togglePrePassword && cfgPrePassword) {
+  togglePrePassword.onclick = () => {
+    const isPass = cfgPrePassword.type === "password";
+    cfgPrePassword.type = isPass ? "text" : "password";
+    togglePrePassword.textContent = isPass ? "🙈" : "👁️";
+  };
+}
 
 /**
  * Whether a landed transfer puts itself on screen. The only preference Decimen
@@ -452,6 +465,7 @@ function offerRetry(message: string) {
   preview.style.display = "none";
   metricsEl.style.display = "none";
   if (diagnosticsEl) diagnosticsEl.style.display = "none";
+  if (prePassPane) prePassPane.style.display = "";
   showError(message);
 }
 
@@ -940,7 +954,7 @@ function onDecoded(bytes: Uint8Array, box?: SymbolBox, info?: SymbolInfo) {
     const payload = decoder.assemble()!;
     const seconds = (performance.now() - startTs) / 1000;
     const ok = fnv1a(payload) === header.payloadFnv;
-    void finish(payload, ok, seconds);
+    void finish(payload, ok, seconds, header.flags);
   }
 }
 
@@ -997,7 +1011,68 @@ function goodputKbs(elapsed: number): number {
   );
 }
 
-async function finish(container: Uint8Array, hashOk: boolean, seconds: number) {
+async function promptAndDecrypt(
+  encryptedPayload: Uint8Array,
+  initialPassword = "",
+  initialError = "",
+): Promise<Uint8Array> {
+  const dialog = document.getElementById("decrypt-dialog") as HTMLDialogElement | null;
+  const form = document.getElementById("decrypt-form") as HTMLFormElement | null;
+  const passInput = document.getElementById("decrypt-password") as HTMLInputElement | null;
+  const errorMsg = document.getElementById("decrypt-error") as HTMLParagraphElement | null;
+  const toggleBtn = document.getElementById("toggle-decrypt-password") as HTMLButtonElement | null;
+
+  if (!dialog || !form || !passInput) {
+    throw new Error("Modal dekripsi tidak tersedia di halaman.");
+  }
+
+  if (toggleBtn) {
+    toggleBtn.onclick = () => {
+      const isPass = passInput.type === "password";
+      passInput.type = isPass ? "text" : "password";
+      toggleBtn.textContent = isPass ? "🙈" : "👁️";
+    };
+  }
+
+  return new Promise((resolve) => {
+    if (errorMsg) {
+      if (initialError) {
+        errorMsg.textContent = initialError;
+        errorMsg.style.display = "block";
+      } else {
+        errorMsg.style.display = "none";
+        errorMsg.textContent = "";
+      }
+    }
+    passInput.value = initialPassword;
+    dialog.showModal();
+    if (initialPassword) {
+      passInput.select();
+    } else {
+      passInput.focus();
+    }
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const password = passInput.value.trim();
+      if (!password) return;
+      try {
+        if (errorMsg) errorMsg.style.display = "none";
+        const decrypted = await decryptContainer(encryptedPayload, password);
+        dialog.close();
+        resolve(decrypted);
+      } catch {
+        if (errorMsg) {
+          errorMsg.textContent = "Password / PIN salah. Coba lagi.";
+          errorMsg.style.display = "block";
+        }
+        passInput.select();
+      }
+    };
+  });
+}
+
+async function finish(container: Uint8Array, hashOk: boolean, seconds: number, flags: number = 0) {
   done = true;
   captureGen++;
   // npm run diagnostics: one JSON report per completed run, POSTed to the dev
@@ -1102,7 +1177,29 @@ async function finish(container: Uint8Array, hashOk: boolean, seconds: number) {
   etaLabel.textContent = msg.receive.etaTotal(formatDurationL(seconds));
   try {
     if (!hashOk) throw new OpticalError("streamChecksumMismatch");
-    const file = await unpackFile(container);
+    if (prePassPane) prePassPane.style.display = "none";
+    const isEncrypted = (flags & FLAG_ENCRYPTED) !== 0;
+    let payload = container;
+    let autoDecrypted = false;
+    if (isEncrypted) {
+      const prePass = cfgPrePassword?.value.trim() ?? "";
+      if (prePass) {
+        try {
+          payload = await decryptContainer(container, prePass);
+          autoDecrypted = true;
+        } catch {
+          // Pre-entered password was incorrect, proceed to modal fallback
+        }
+      }
+      if (!autoDecrypted) {
+        payload = await promptAndDecrypt(
+          container,
+          prePass,
+          prePass ? "Password awal salah. Masukkan password yang benar:" : "",
+        );
+      }
+    }
+    const file = await unpackFile(payload);
     if (!(await verifyFile(file))) throw new OpticalError("sha256Failed");
 
     // The container carries its own media type, so the receiver never has to be
@@ -1115,6 +1212,7 @@ async function finish(container: Uint8Array, hashOk: boolean, seconds: number) {
           msg.units.kbPerSecond(fmtNumber(container.length / 1024 / seconds, 1, 1)),
         ),
         ...(file.compression === "gzip" ? [msg.receive.gzipDecompressed] : []),
+        ...(isEncrypted ? [autoDecrypted ? "🔒 Auto-Decrypted (AES-GCM)" : "🔒 Decrypted (AES-GCM)"] : []),
         msg.receive.shaVerified,
       ].join(" · ");
     if (isSnippet(file)) {

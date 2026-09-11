@@ -4,16 +4,7 @@ import type { Plugin } from "vite";
 // receive/index.html — the inline SVG is what lets the standalone pages keep
 // the logo with no external reference. A drift here fails the build (below).
 const BRAND_INNER =
-  '<svg class="brand-logo" viewBox="0 0 543 554.1" fill="currentColor" aria-hidden="true">' +
-  '<g transform="translate(-241,789) scale(0.1,-0.1)">' +
-  '<path d="M2410 6513 l0 -1378 103 101 c540 531 1324 986 1984 1153 402 102 850 95 1268 -21 ' +
-  "529 -146 1300 -581 1860 -1050 175 -146 212 -184 199 -205 -37 -63 -502 -432 -754 -600 " +
-  "-969 -644 -1785 -844 -2590 -634 -667 174 -1376 581 -1947 1118 l-123 115 0 -1382 0 -1381 " +
-  "1478 4 c1291 3 1491 5 1588 20 1345 194 2240 1124 2355 2446 17 195 7 620 -19 786 -192 " +
-  '1236 -1030 2069 -2262 2249 -217 32 -411 36 -1772 36 l-1368 0 0 -1377z"/>' +
-  '<path d="M4945 5906 c-300 -68 -532 -287 -611 -577 -25 -89 -25 -289 0 -378 141 -513 724 ' +
-  "-749 1179 -477 405 242 503 778 209 1148 -100 125 -258 229 -417 273 -82 22 -282 29 -360 " +
-  '11z"/></g></svg>Decimen Optical Transfer';
+  '<svg class="brand-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3m-3.05-6.95l-2.12 2.12m-9.66 9.66l-2.12 2.12m13.9 0l-2.12-2.12M6.88 6.88L4.76 4.76"/><circle cx="12" cy="12" r="8" stroke-dasharray="2 4"/></svg>PhotonDrop';
 
 /**
  * A standalone file has no siblings, so links to the other pages are dead ends.

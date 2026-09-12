@@ -1,12 +1,43 @@
-<!-- Favicon: the site's --bg as a rounded tile with the mark in --accent, so
-     the tab icon reads on light and dark tab bars alike and matches the UI.
-     The same artwork is inlined (fill: currentColor) in each page header. -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-  <rect width="640" height="640" rx="112" fill="#070a11"/>
-  <g fill="#58c8ff" transform="translate(48.5,43)">
-    <g transform="translate(-241,789) scale(0.1,-0.1)">
-      <path d="M2410 6513 l0 -1378 103 101 c540 531 1324 986 1984 1153 402 102 850 95 1268 -21 529 -146 1300 -581 1860 -1050 175 -146 212 -184 199 -205 -37 -63 -502 -432 -754 -600 -969 -644 -1785 -844 -2590 -634 -667 174 -1376 581 -1947 1118 l-123 115 0 -1382 0 -1381 1478 4 c1291 3 1491 5 1588 20 1345 194 2240 1124 2355 2446 17 195 7 620 -19 786 -192 1236 -1030 2069 -2262 2249 -217 32 -411 36 -1772 36 l-1368 0 0 -1377z"/>
-      <path d="M4945 5906 c-300 -68 -532 -287 -611 -577 -25 -89 -25 -289 0 -378 141 -513 724 -749 1179 -477 405 242 503 778 209 1148 -100 125 -258 229 -417 273 -82 22 -282 29 -360 11z"/>
-    </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00f0ff" stop-opacity="1"/>
+      <stop offset="35%" stop-color="#0088ff" stop-opacity="0.8"/>
+      <stop offset="70%" stop-color="#0044aa" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#070a11" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="beam" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="30%" stop-color="#00f0ff"/>
+      <stop offset="70%" stop-color="#0088ff"/>
+      <stop offset="100%" stop-color="#0033aa" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="100" fill="#070a11"/>
+  
+  <!-- Outer Glow and Ring -->
+  <circle cx="256" cy="256" r="220" fill="none" stroke="#00f0ff" stroke-width="3" stroke-opacity="0.3" stroke-dasharray="8 6"/>
+  <circle cx="256" cy="256" r="190" fill="none" stroke="#00d8ff" stroke-width="4" stroke-opacity="0.7"/>
+  <circle cx="256" cy="256" r="180" fill="url(#glow)"/>
+
+  <!-- Optical Aperture Blades -->
+  <g fill="none" stroke="#00d8ff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+    <path d="M 256 100 Q 340 140 370 210" />
+    <path d="M 370 210 Q 390 300 340 370" />
+    <path d="M 340 370 Q 260 410 190 370" />
+    <path d="M 190 370 Q 120 310 130 220" />
+    <path d="M 130 220 Q 180 130 256 100" />
   </g>
+
+  <!-- Central Core Optical Ring -->
+  <circle cx="256" cy="256" r="65" fill="#070a11" stroke="#00f0ff" stroke-width="6"/>
+  <circle cx="256" cy="256" r="45" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.6"/>
+  <circle cx="256" cy="256" r="25" fill="#00f0ff"/>
+  <circle cx="256" cy="256" r="12" fill="#ffffff"/>
+
+  <!-- Photon Light Ray Beam -->
+  <path d="M 90 90 L 422 422" stroke="url(#beam)" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="90" cy="90" r="14" fill="#ffffff" filter="drop-shadow(0 0 8px #00f0ff)"/>
+  <circle cx="422" cy="422" r="10" fill="#00f0ff" opacity="0.8"/>
+  <line x1="210" y1="210" x2="302" y2="302" stroke="#ffffff" stroke-width="16" stroke-linecap="round"/>
 </svg>

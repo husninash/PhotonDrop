@@ -42,6 +42,7 @@ export const LOCALES: readonly LocaleInfo[] = [
   { code: "ja", lang: "ja", nativeName: "日本語", dir: "ltr", reviewed: false },
   { code: "ko", lang: "ko", nativeName: "한국어", dir: "ltr", reviewed: false },
   { code: "ar", lang: "ar", nativeName: "العربية", dir: "rtl", reviewed: false },
+  { code: "id", lang: "id", nativeName: "Bahasa Indonesia", dir: "ltr", reviewed: true },
 ];
 
 export function localeByCode(code: string): LocaleInfo | undefined {
@@ -64,6 +65,8 @@ const BARE_LANGUAGE_ALIASES: Record<string, string> = {
   // Only Brazilian Portuguese ships today; European Portuguese readers get the
   // nearest thing rather than English.
   pt: "pt-br",
+  // Legacy BCP-47 tag for Indonesian
+  in: "id",
 };
 
 export function matchLocale(preferred: readonly string[]): LocaleInfo | undefined {

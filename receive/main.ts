@@ -1,3 +1,4 @@
+
 // Receiver: camera → WASM QR decode in workers → fountain decoder → file.
 //
 // Field lessons baked in:
@@ -35,6 +36,12 @@ import {
   type SymbolQuad,
 } from "../shared/worker-pool";
 import { isSnippet, snippetText } from "../shared/snippet";
+import {
+  saveHistoryRecord,
+  getHistoryRecords,
+  deleteHistoryRecord,
+  clearAllHistory,
+} from "../shared/history";
 import {
   FLAG_ENCRYPTED,
   classifyFrame,
@@ -86,6 +93,120 @@ if (togglePrePassword && cfgPrePassword) {
     togglePrePassword.textContent = isPass ? "🙈" : "👁️";
   };
 }
+
+const btnHistory = document.getElementById("btn-history") as HTMLButtonElement | null;
+const historyDialog = document.getElementById("history-dialog") as HTMLDialogElement | null;
+const historyBadge = document.getElementById("history-badge") as HTMLSpanElement | null;
+const historyList = document.getElementById("history-list") as HTMLDivElement | null;
+const historyClose = document.getElementById("history-close") as HTMLButtonElement | null;
+const historyClearAll = document.getElementById("history-clear-all") as HTMLButtonElement | null;
+
+async function refreshHistoryUI() {
+  if (!historyList) return;
+  try {
+    const records = await getHistoryRecords();
+    if (historyBadge) {
+      if (records.length > 0) {
+        historyBadge.textContent = String(records.length);
+        historyBadge.style.display = "inline-block";
+      } else {
+        historyBadge.style.display = "none";
+      }
+    }
+    if (records.length === 0) {
+      historyList.innerHTML = `<div class="history-empty">Belum ada riwayat transfer.<br><small style="color: var(--muted)">File atau teks yang Anda terima akan otomatis tersimpan di sini secara offline.</small></div>`;
+      if (historyClearAll) historyClearAll.style.display = "none";
+      return;
+    }
+    if (historyClearAll) historyClearAll.style.display = "block";
+    historyList.innerHTML = "";
+    for (const rec of records) {
+      const item = document.createElement("div");
+      item.className = "history-item";
+
+      const info = document.createElement("div");
+      info.className = "history-item-info";
+
+      const title = document.createElement("div");
+      title.className = "history-item-title";
+      const iconSpan = document.createElement("span");
+      iconSpan.textContent = rec.isSnippet ? "📝 " : "📄 ";
+      title.append(iconSpan, rec.name);
+      if (rec.isEncrypted) {
+        const lock = document.createElement("span");
+        lock.className = "history-lock-badge";
+        lock.textContent = "🔒 Enkripsi";
+        title.append(lock);
+      }
+
+      const meta = document.createElement("div");
+      meta.className = "history-item-meta";
+      const dateStr = new Date(rec.timestamp).toLocaleString();
+      const kb = (rec.size / 1024).toFixed(1);
+      meta.textContent = `${dateStr} · ${kb} KB · ${rec.type}`;
+
+      info.append(title, meta);
+
+      const actions = document.createElement("div");
+      actions.className = "history-item-actions";
+
+      if (rec.isSnippet && rec.textSnippet) {
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "secondary-button history-act-btn";
+        copyBtn.textContent = "Salin";
+        copyBtn.onclick = async () => {
+          await navigator.clipboard.writeText(rec.textSnippet!);
+          copyBtn.textContent = "Tersalin!";
+          setTimeout(() => (copyBtn.textContent = "Salin"), 1500);
+        };
+        actions.append(copyBtn);
+      } else if (rec.blob) {
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "secondary-button history-act-btn";
+        dlBtn.href = URL.createObjectURL(rec.blob);
+        dlBtn.download = rec.name;
+        dlBtn.textContent = "Unduh";
+        actions.append(dlBtn);
+      }
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "secondary-button history-del-btn";
+      delBtn.textContent = "Hapus";
+      delBtn.onclick = async () => {
+        if (rec.id !== undefined) {
+          await deleteHistoryRecord(rec.id);
+          await refreshHistoryUI();
+        }
+      };
+      actions.append(delBtn);
+
+      item.append(info, actions);
+      historyList.append(item);
+    }
+  } catch (err) {
+    console.error("Failed to load transfer history:", err);
+  }
+}
+
+if (btnHistory && historyDialog) {
+  btnHistory.onclick = () => {
+    refreshHistoryUI();
+    historyDialog.showModal();
+  };
+}
+if (historyClose && historyDialog) {
+  historyClose.onclick = () => historyDialog.close();
+}
+if (historyClearAll) {
+  historyClearAll.onclick = async () => {
+    if (confirm("Kosongkan semua riwayat transfer?")) {
+      await clearAllHistory();
+      await refreshHistoryUI();
+    }
+  };
+}
+if (historyDialog) closeOnBackdropClick(historyDialog);
+refreshHistoryUI().catch(console.error);
 
 /**
  * Whether a landed transfer puts itself on screen. The only preference Decimen
@@ -1143,11 +1264,11 @@ async function finish(container: Uint8Array, hashOk: boolean, seconds: number, f
         },
         camera: camera
           ? {
-              width: camera.width,
-              height: camera.height,
-              fps: camera.frameRate,
-              facingMode: camera.facingMode ?? null,
-            }
+            width: camera.width,
+            height: camera.height,
+            fps: camera.frameRate,
+            facingMode: camera.facingMode ?? null,
+          }
           : null,
         cameraCapabilities: track ? probeCameraCapabilities(track) : null,
         device: { cores: navigator.hardwareConcurrency ?? null, ua: navigator.userAgent },
@@ -1216,9 +1337,19 @@ async function finish(container: Uint8Array, hashOk: boolean, seconds: number, f
         msg.receive.shaVerified,
       ].join(" · ");
     if (isSnippet(file)) {
+      const text = snippetText(file);
+      saveHistoryRecord({
+        timestamp: Date.now(),
+        name: "Teks Potongan",
+        size: file.bytes.length,
+        type: file.type || "text/plain",
+        isSnippet: true,
+        textSnippet: text,
+        isEncrypted,
+      }).then(() => refreshHistoryUI()).catch(console.error);
       progressLabel.textContent = msg.receive.recoveredText;
       setStatus("");
-      showSnippet(snippetText(file), runStats(msg.receive.textLabel), cfgAutoShow.checked);
+      showSnippet(text, runStats(msg.receive.textLabel), cfgAutoShow.checked);
       return;
     }
 
@@ -1233,7 +1364,17 @@ async function finish(container: Uint8Array, hashOk: boolean, seconds: number, f
     const heading = document.createElement("div");
     heading.className = "done";
     heading.textContent = msg.receive.transferComplete;
-    const url = URL.createObjectURL(new Blob([file.bytes as BlobPart], { type: file.type }));
+    const blob = new Blob([file.bytes as BlobPart], { type: file.type });
+    saveHistoryRecord({
+      timestamp: Date.now(),
+      name: file.name,
+      size: file.bytes.length,
+      type: file.type,
+      isSnippet: false,
+      blob,
+      isEncrypted,
+    }).then(() => refreshHistoryUI()).catch(console.error);
+    const url = URL.createObjectURL(blob);
     const download = document.createElement("a");
     download.className = "download";
     download.href = url;

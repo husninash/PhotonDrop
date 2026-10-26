@@ -15,7 +15,7 @@ export const messages: Messages = {
   },
 
   home: {
-    title: "PhotonDrop — transfer file dengan cahaya",
+    title: "SIMONAS — transfer file dengan cahaya",
     metaDescription:
       "Kirim file atau teks antar perangkat hanya bermodalkan layar dan kamera. Kode QR animasi berfountain-code, tanpa jaringan internet.",
     ogDescription:
@@ -34,10 +34,10 @@ export const messages: Messages = {
     cardReceiveTitle: "Arahkan dan terima",
     cardReceiveBody: "Arahkan kamera Anda ke layar pengirim untuk menerima file.",
     cardReceiveAction: "Terima",
-    shareSite: "Bagikan PhotonDrop",
+    shareSite: "Bagikan SIMONAS",
     supportTitle: "Gratis, open source, tanpa iklan",
     supportBodyHtml:
-      'Jika PhotonDrop mempermudah pekerjaan Anda, Anda dapat <a href="https://buymeacoffee.com/bashalarmist" target="_blank" rel="noopener noreferrer">mentraktir kopi</a>.',
+      'Jika SIMONAS mempermudah pekerjaan Anda, Anda dapat <a href="https://buymeacoffee.com/bashalarmist" target="_blank" rel="noopener noreferrer">mentraktir kopi</a>.',
     shareDialogTitle: "Bagikan aplikasi ini",
     shareDialogHint: "Pindai ini dengan kamera perangkat lain, atau kirimkan tautannya.",
     siteLinkAriaLabel: "Tautan situs",
@@ -46,7 +46,7 @@ export const messages: Messages = {
   },
 
   send: {
-    docTitle: "PhotonDrop — kirim",
+    docTitle: "SIMONAS — kirim",
     eyebrow: "Layar → kamera",
     introCopy: "Tidak ada data yang keluar dari perangkat Anda sebelum dipindai penerima.",
     modeAriaLabel: "Apa yang ingin dikirim",
@@ -95,7 +95,7 @@ export const messages: Messages = {
     shareDialogTitle: "Bagikan tautan penerima",
     shareDialogHint: "Pindai dengan kamera perangkat lain, atau kirimkan tautannya.",
     receiverLinkAriaLabel: "Tautan penerima",
-    shareTitleData: "PhotonDrop — penerima",
+    shareTitleData: "SIMONAS — penerima",
     loadingDemo: (name) => `memuat ${name}…`,
     demoLoadFailed: (name, status) => `gagal memuat ${name} (${status})`,
     preparingFile: (name) => `menyiapkan ${name}…`,
@@ -134,7 +134,7 @@ export const messages: Messages = {
   },
 
   receive: {
-    docTitle: "PhotonDrop — terima",
+    docTitle: "SIMONAS — terima",
     eyebrow: "Kamera → perangkat Anda",
     title: "Terima",
     statusReady: "Siap memindai aliran file atau teks",
@@ -208,7 +208,7 @@ export const messages: Messages = {
     mediaVideo: "video",
     mediaAudio: "audio",
     showMedia: (noun) => `Tampilkan ${noun}`,
-    clearCache: "Bersihkan cache PhotonDrop",
+    clearCache: "Bersihkan cache SIMONAS",
     cacheCleared: "Cache dibersihkan",
     clearCacheFailed: "Gagal membersihkan — coba lagi",
     receivedPreviewAlt: (name) => `Pratinjau file diterima: ${name}`,
@@ -272,7 +272,7 @@ export const messages: Messages = {
     unreviewedNote:
       "Terjemahan ini disusun dan telah ditinjau untuk pengguna penutur Bahasa Indonesia.",
     unreviewedLinkText: "Laporkan masalah terjemahan",
-    switchOffer: "PhotonDrop tersedia dalam Bahasa Indonesia.",
+    switchOffer: "SIMONAS tersedia dalam Bahasa Indonesia.",
     switchAction: "Tampilkan dalam Bahasa Indonesia",
   },
 };

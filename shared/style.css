@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 * {
   box-sizing: border-box;
@@ -13,7 +13,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font: 15px/1.6 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font: 15px/1.6 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2071,3 +2071,391 @@ details.settings details.subsection .hint {
   border-color: rgba(239, 68, 68, 0.3);
 }
 
+
+/* SIMONAS theme ------------------------------------------------------------
+   Tampilan disamakan dengan SIMONAS: latar terang, panel putih bergaris tipis,
+   tombol pil navy, tanpa gradien/glow. Lapisan ini menimpa gaya di atas dan
+   sengaja diletakkan terakhir; gelap mengikuti pengaturan perangkat. */
+:root {
+  color-scheme: light;
+  --bg: #f5f6f8;
+  --panel: #ffffff;
+  --panel-strong: #ffffff;
+  --panel2: #f7f9fb;
+  --chip: #edf1f4;
+  --line: #e8ebef;
+  --line-bright: #d5dbe1;
+  --text: #19232e;
+  --text-dim: #3d4955;
+  --muted: #687582;
+  --muted-dim: #9aa3ad;
+  --accent: #176273;
+  --accent-hi: #1f7f95;
+  --accent-glow: transparent;
+  --accent-ink: #ffffff;
+  --btn: #19232e;
+  --btn-hover: #2c3a48;
+  --btn-ink: #ffffff;
+  --green: #198562;
+  --red: #c33e4a;
+  --amber: #b77615;
+  --viewport-bg: #f5f6f8;
+  --accent-rgb: 23, 98, 115;
+  --bg-rgb: 245, 246, 248;
+  --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #0b0c0f;
+    --panel: #16181d;
+    --panel-strong: #16181d;
+    --panel2: #121418;
+    --chip: #22252c;
+    --line: #2c3038;
+    --line-bright: #3a3f49;
+    --text: #f4f7fb;
+    --text-dim: #d3d8e0;
+    --muted: #a1a7b3;
+    --muted-dim: #6b7280;
+    --accent: #6da8ff;
+    --accent-hi: #9cc4ff;
+    --btn: #f4f7fb;
+    --btn-hover: #d9dee6;
+    --btn-ink: #0b0c0f;
+    --green: #36c69a;
+    --red: #f35d73;
+    --amber: #f3ad42;
+    --viewport-bg: #0b0c0f;
+    --accent-rgb: 109, 168, 255;
+    --bg-rgb: 11, 12, 15;
+    --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.home-page,
+.tool-page,
+.receiver-page {
+  background: var(--bg);
+}
+
+h1 {
+  color: var(--text);
+  letter-spacing: -0.02em;
+  text-transform: none;
+  font-weight: 700;
+}
+.hero h1 {
+  font-family: 'Sora', 'Inter', system-ui, sans-serif;
+}
+/* Tanpa label kecil di atas judul, seperti halaman SIMONAS. */
+.eyebrow,
+.card-kicker {
+  display: none;
+}
+
+.site-header {
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.brand {
+  gap: 8px;
+  color: var(--text);
+  font-family: 'Sora', 'Inter', system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: none;
+}
+.brand-dot {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--green);
+}
+.mode-nav {
+  gap: 4px;
+}
+.mode-badge,
+.mode-nav a {
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 16px;
+  color: var(--muted);
+  background: transparent;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  box-shadow: none;
+}
+.mode-nav a:hover,
+.mode-nav a:focus-visible {
+  color: var(--text);
+  background: var(--chip);
+}
+.mode-badge,
+.mode-nav a[aria-current="page"] {
+  color: var(--text);
+  background: var(--chip);
+}
+
+/* Tombol: satu gaya pil seperti SIMONAS, tanpa gradien, bayangan, atau lompatan. */
+button,
+.action,
+.file-picker-button {
+  color: var(--btn-ink);
+  background: var(--btn);
+  border: 1px solid var(--btn);
+  border-radius: 999px;
+  box-shadow: none;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+button {
+  padding: 12px 28px;
+  font-size: 15px;
+}
+button:hover,
+.action:hover,
+.action:focus-visible,
+.file-picker:hover .file-picker-button {
+  color: var(--btn-ink);
+  background: var(--btn-hover);
+  border-color: var(--btn-hover);
+  box-shadow: none;
+  transform: none;
+}
+.secondary-button,
+.text-button,
+.password-toggle-btn,
+.history-act-btn,
+.history-del-btn,
+.no-signal-dismiss {
+  color: var(--text);
+  background: transparent;
+  border-color: var(--line-bright);
+  box-shadow: none;
+}
+.secondary-button:hover,
+.text-button:hover,
+.history-act-btn:hover {
+  color: var(--text);
+  background: var(--chip);
+  border-color: var(--line-bright);
+}
+.password-toggle-btn,
+.password-toggle-btn:hover {
+  border: 0;
+  background: transparent;
+}
+.text-button.danger,
+.history-del-btn {
+  color: var(--red);
+}
+.file-picker.has-file .file-picker-button,
+.file-picker.has-file:hover .file-picker-button {
+  color: var(--red);
+  background: transparent;
+  border-color: var(--red);
+}
+a.download,
+a.download:hover {
+  color: #ffffff;
+  background: var(--green);
+  border: 1px solid var(--green);
+  border-radius: 999px;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Panel: putih, garis tipis, tanpa kaca buram atau glow. */
+.file-picker,
+details.settings,
+.encryption-bar,
+.stream-specs,
+.transfer-card,
+.note-feature-card,
+.help-dialog,
+.history-dialog,
+.decrypt-modal,
+.share-dialog,
+.no-signal-toast,
+.locale-banner,
+.note-composer textarea {
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.file-picker {
+  border-style: dashed;
+  border-color: var(--line-bright);
+}
+.file-picker:hover {
+  background: var(--panel);
+  border-color: var(--text);
+  box-shadow: none;
+}
+.transfer-card:hover {
+  transform: none;
+  border-color: var(--line-bright);
+}
+.help-dialog,
+.history-dialog,
+.decrypt-modal,
+.share-dialog,
+.no-signal-toast {
+  box-shadow: var(--shadow);
+}
+.help-dialog::backdrop,
+.history-dialog::backdrop,
+.decrypt-modal::backdrop,
+.share-dialog::backdrop {
+  background: rgba(15, 23, 42, 0.4);
+}
+.password-title,
+.stream-specs dd,
+.progress-status strong {
+  color: var(--text);
+}
+.password-input-group input,
+.share-url-row input,
+details.settings select,
+details.settings label.camera-pick select {
+  color: var(--text);
+  background: var(--panel2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.password-input-group input:focus {
+  border-color: var(--text);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.15);
+}
+.lock-glow-icon {
+  color: var(--text);
+  filter: none;
+}
+
+/* Kode QR tetap di atas putih (zona sunyi), hanya bingkainya yang disederhanakan. */
+.stage {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px var(--line);
+}
+.stage:hover {
+  box-shadow: 0 0 0 2px var(--line-bright);
+}
+
+.progress {
+  background: var(--chip);
+  border: 0;
+  box-shadow: none;
+}
+.progress > div {
+  background: var(--green);
+  box-shadow: none;
+}
+.progress > div::after {
+  display: none;
+}
+.progress > div.error {
+  background: var(--red);
+  box-shadow: none;
+}
+.progress-status {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+img.received,
+video.received {
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.site-footer {
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  background: var(--panel);
+}
+.site-footer a {
+  color: var(--muted);
+}
+/* Alat internal: tanpa ajakan donasi. Kredit dan lisensi tetap tampil. */
+.support-link,
+.support-card,
+.support-after,
+.home-share {
+  display: none !important;
+}
+.no-signal-toast {
+  border-radius: 999px;
+}
+.history-btn,
+.clear-btn,
+.demo-buttons button {
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--line-bright);
+  border-radius: 999px;
+}
+.history-btn:hover,
+.clear-btn:hover,
+.demo-buttons button:hover,
+.no-signal-dismiss:hover {
+  color: var(--text);
+  background: var(--chip);
+  border-color: var(--line-bright);
+}
+.history-del-btn:hover,
+.text-button.danger:hover {
+  color: var(--red);
+  background: transparent;
+  border-color: var(--red);
+}
+.history-badge {
+  color: #ffffff;
+  background: var(--red);
+}
+.history-lock-badge {
+  color: var(--text);
+  background: var(--chip);
+}
+.mode-picker input:checked + span {
+  color: var(--text);
+  background: var(--chip);
+  box-shadow: none;
+}
+.footer-lang .lang-select:hover,
+.footer-lang .lang-select:focus-visible,
+.locale-banner a {
+  color: var(--text);
+  border-color: var(--line-bright);
+}
+/* Huruf biasa seperti label SIMONAS, bukan kapital berjarak. */
+details.settings summary,
+details.settings label,
+.stream-specs dt,
+.metric .k,
+.action,
+.footer-links a,
+.demo-picker,
+.mode-picker span,
+.note-composer,
+.help-dialog h2,
+.password-title,
+.text-button {
+  text-transform: none;
+  letter-spacing: 0;
+}
+details.settings summary,
+.password-title,
+.help-dialog h2 {
+  font-size: 14px;
+  font-weight: 650;
+}

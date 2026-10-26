@@ -94,8 +94,8 @@ function resolveLocale(): LocaleInfo {
     const info = localeByCode(stored);
     if (info) return info;
   }
-  const preferred = typeof navigator !== "undefined" ? navigator.languages : [];
-  return matchLocale(preferred ?? []) ?? localeByCode(DEFAULT_LOCALE)!;
+  // SIMONAS: Bahasa Indonesia kecuali pengguna memilih bahasa lain di footer.
+  return localeByCode("id") ?? localeByCode(DEFAULT_LOCALE)!;
 }
 
 /** Dot-path lookup into the catalog for data-i18n keys. Loud on a miss: a

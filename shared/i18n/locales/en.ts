@@ -23,7 +23,7 @@ export const messages: Messages = {
   },
 
   home: {
-    title: "PhotonDrop — transfer files with light",
+    title: "SIMONAS — transfer files with light",
     metaDescription:
       "Send a file or text between two devices with nothing but a screen and a camera. Fountain-coded animated QR codes, no network path in between.",
     ogDescription:
@@ -42,10 +42,10 @@ export const messages: Messages = {
     cardReceiveTitle: "Point and receive",
     cardReceiveBody: "Point your camera at the sender's screen to receive the file.",
     cardReceiveAction: "Receive",
-    shareSite: "Share PhotonDrop",
+    shareSite: "Share SIMONAS",
     supportTitle: "Free, open source, no ads",
     supportBodyHtml:
-      'If PhotonDrop made your day easier, you can <a href="https://buymeacoffee.com/bashalarmist" target="_blank" rel="noopener noreferrer">buy me a coffee</a>.',
+      'If SIMONAS made your day easier, you can <a href="https://buymeacoffee.com/bashalarmist" target="_blank" rel="noopener noreferrer">buy me a coffee</a>.',
     shareDialogTitle: "Share this app",
     shareDialogHint: "Scan this with another device's camera, or send it the link.",
     siteLinkAriaLabel: "Site link",
@@ -54,7 +54,7 @@ export const messages: Messages = {
   },
 
   send: {
-    docTitle: "PhotonDrop — send",
+    docTitle: "SIMONAS — send",
     eyebrow: "Screen → camera",
     introCopy: "Nothing leaves your device until you scan with a receiver.",
     modeAriaLabel: "What to send",
@@ -142,7 +142,7 @@ export const messages: Messages = {
   },
 
   receive: {
-    docTitle: "PhotonDrop — receive",
+    docTitle: "SIMONAS — receive",
     eyebrow: "Camera → your device",
     title: "Receive",
     statusReady: "Ready to scan a file or text stream",

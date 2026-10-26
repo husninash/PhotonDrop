@@ -4,7 +4,7 @@ import type { Plugin } from "vite";
 // receive/index.html — the inline SVG is what lets the standalone pages keep
 // the logo with no external reference. A drift here fails the build (below).
 const BRAND_INNER =
-  '<svg class="brand-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3m-3.05-6.95l-2.12 2.12m-9.66 9.66l-2.12 2.12m13.9 0l-2.12-2.12M6.88 6.88L4.76 4.76"/><circle cx="12" cy="12" r="8" stroke-dasharray="2 4"/></svg>PhotonDrop';
+  '<span class="brand-dot" aria-hidden="true"></span>SIMONAS';
 
 /**
  * A standalone file has no siblings, so links to the other pages are dead ends.
@@ -55,15 +55,6 @@ export function rewriteStandaloneLinks(page: "send" | "receive"): Plugin {
     {
       // Same rule for the home-screen icon: no siblings to load it from.
       from: '<link rel="apple-touch-icon" href="../apple-touch-icon.png" />',
-      to: "",
-      required: true,
-    },
-    {
-      // Hosted-only: a downloaded artifact should not solicit. The JS-side
-      // counterpart is the support.ts → support.inline.ts module swap.
-      from:
-        ' · <a class="support-link" href="https://buymeacoffee.com/bashalarmist" ' +
-        'target="_blank" rel="noopener noreferrer" data-i18n="chrome.footerSupport">♥ support</a>',
       to: "",
       required: true,
     },

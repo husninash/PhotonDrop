@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    { "source": "/", "destination": "/id/", "permanent": false },
+    { "source": "/send", "destination": "/id/send/", "permanent": false },
+    { "source": "/send/", "destination": "/id/send/", "permanent": false },
+    { "source": "/receive", "destination": "/id/receive/", "permanent": false },
+    { "source": "/receive/", "destination": "/id/receive/", "permanent": false }
+  ]
+}

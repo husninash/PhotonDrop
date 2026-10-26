@@ -51,12 +51,12 @@ const pkg = JSON.parse(readFileSync(resolve(__dirname, "package.json"), "utf8"))
 // Shared between the root PWA manifest and the per-locale manifests emitted
 // by i18nPages() — one identity, translated descriptions.
 const MANIFEST_BASE = {
-  name: "PhotonDrop",
-  short_name: "PhotonDrop",
+  name: "SIMONAS",
+  short_name: "SIMONAS",
   description:
     "Send a file or text between two devices with a screen and a camera. No network.",
-  theme_color: "#070a11",
-  background_color: "#070a11",
+  theme_color: "#ffffff",
+  background_color: "#f5f6f8",
   display: "standalone" as const,
   // Real icons, not the demo payload image this once pointed at. The
   // maskable variant keeps the mark inside the launcher's safe zone;

@@ -1,9 +1,13 @@
 {
   "redirects": [
     { "source": "/", "destination": "/id/receive/", "permanent": false },
-    { "source": "/send/?", "destination": "/id/receive/", "permanent": false },
-    { "source": "/receive/?", "destination": "/id/receive/", "permanent": false },
-    { "source": "/(ar|de|es|fr|hi|id|it|ja|ko|pt-br|ru|zh-hans)/?", "destination": "/id/receive/", "permanent": false },
-    { "source": "/(ar|de|es|fr|hi|id|it|ja|ko|pt-br|ru|zh-hans)/send/?", "destination": "/id/receive/", "permanent": false }
+    { "source": "/send", "destination": "/id/receive/", "permanent": false },
+    { "source": "/send/", "destination": "/id/receive/", "permanent": false },
+    { "source": "/receive", "destination": "/id/receive/", "permanent": false },
+    { "source": "/receive/", "destination": "/id/receive/", "permanent": false },
+    { "source": "/:lang(ar|de|es|fr|hi|id|it|ja|ko|pt-br|ru|zh-hans)", "destination": "/id/receive/", "permanent": false },
+    { "source": "/:lang(ar|de|es|fr|hi|id|it|ja|ko|pt-br|ru|zh-hans)/", "destination": "/id/receive/", "permanent": false },
+    { "source": "/:lang(ar|de|es|fr|hi|id|it|ja|ko|pt-br|ru|zh-hans)/send", "destination": "/id/receive/", "permanent": false },
+    { "source": "/:lang(ar|de|es|fr|hi|id|it|ja|ko|pt-br|ru|zh-hans)/send/", "destination": "/id/receive/", "permanent": false }
   ]
 }

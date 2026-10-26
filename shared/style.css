@@ -2459,3 +2459,7 @@ details.settings summary,
   font-size: 14px;
   font-weight: 650;
 }
+/* SIMONAS hanya memakai halaman Terima: menu Kirim tidak ditampilkan. */
+.mode-nav a[href*="send/"] {
+  display: none;
+}

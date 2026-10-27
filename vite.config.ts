@@ -180,6 +180,11 @@ export default defineConfig(({ mode }) => {
           // webmanifest included so the per-locale manifests emitted by
           // i18nPages() are served offline alongside their page trees.
           globPatterns: ["**/*.{js,css,html,wasm,png,svg,webmanifest}"],
+          // SIMONAS hanya memakai halaman Terima: Beranda dan Kirim tidak disimpan offline,
+          // sehingga membukanya selalu sampai ke server dan dialihkan ke /id/receive/
+          // (vercel.json), bukan disajikan dari salinan service worker.
+          globIgnores: ["index.html", "*/index.html", "send/**", "*/send/**"],
+          navigateFallback: null,
           // Received media plays from the Cache API at a real URL: iOS Safari
           // will not reliably play a blob: URL handed to <video>/<audio>, but
           // WebKit's media loader is happy with ranged HTTP responses. The
